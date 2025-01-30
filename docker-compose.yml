@@ -1,0 +1,15 @@
+version: '3'
+services:
+  app:
+    container_name: App
+    build:
+      context: .
+    restart: always
+    ports:
+      - "8080:8080"
+    networks:
+      - net
+
+networks:
+  net:
+    driver: bridge
