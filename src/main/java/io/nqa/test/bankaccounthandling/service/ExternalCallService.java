@@ -2,6 +2,8 @@ package io.nqa.test.bankaccounthandling.service;
 
 import io.nqa.commons.CustomResponse;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.*;
@@ -11,7 +13,14 @@ import org.springframework.web.client.*;
 public class ExternalCallService implements IExternalCallService {
     private final RestTemplate restTemplate;
     private final String baseUri = "https://httpstat.us/";
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    /**
+     * Make request to httpstat.us API
+     *
+     * @param uri request uri
+     * @return custom response
+     */
     @Override
     public CustomResponse makeRequest(String uri) {
         try {
@@ -30,14 +39,25 @@ public class ExternalCallService implements IExternalCallService {
         }
     }
 
+    /**
+     * Call {@link #makeRequest(String)} with desired status code as integer.
+     *
+     * @param statusCode desired status code
+     * @return custom response
+     */
     @Override
     public CustomResponse makeRequest(int statusCode) {
         return makeRequest(String.valueOf(statusCode));
     }
 
+    /**
+     * Get random status code from httpstat.us
+     *
+     * @return custom response
+     */
     @Override
     public CustomResponse getRandom() {
-        return makeRequest("random/100-561");
+        return makeRequest("random/101,200-304,306-561");
     }
 
     /**
@@ -47,6 +67,7 @@ public class ExternalCallService implements IExternalCallService {
      */
     @Override
     public CustomResponse makeAllRequests() {
+        logger.info("Starting multiple request for {} endpoints", baseUri);
 //        makeRequest(100); continue - hangs
         makeRequest(101);
 //        makeRequest(102); processing - hangs
@@ -134,6 +155,7 @@ public class ExternalCallService implements IExternalCallService {
         makeRequest(527);
         makeRequest(530);
         makeRequest(561);
+        logger.info("Finished with {} requests", baseUri);
 
         return new CustomResponse(true, "Made request for all supported codes");
     }
