@@ -2,7 +2,6 @@ package io.nqa.test.bankaccounthandling.service;
 
 import io.nqa.commons.CustomResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.*;
@@ -20,12 +19,13 @@ public class ExternalCallService implements IExternalCallService {
             return new CustomResponse(true, response.getBody());
         } catch (RestClientException e) {
             if (HttpClientErrorException.class.isAssignableFrom(e.getClass()))
-                return new CustomResponse(true, "Received client error " + ((HttpClientErrorException) e).getStatusCode() + " " + ((HttpClientErrorException) e).getStatusText());
+                return new CustomResponse(true, "Received client error " + ((HttpClientErrorException) e).getStatusText());
             if (HttpServerErrorException.class.isAssignableFrom(e.getClass()))
-                return new CustomResponse(true, "Received server error " + ((HttpServerErrorException) e).getStatusCode() + " " + ((HttpServerErrorException) e).getStatusText());
+                return new CustomResponse(true, "Received server error " + ((HttpServerErrorException) e).getStatusText());
             if (e.getClass().equals(ResourceAccessException.class))
                 return new CustomResponse(true, "Received resource access error " + e.getMessage());
 
+            e.printStackTrace();
             return new CustomResponse(false, "External request response threw unhandled exception " + e.getClass().getSimpleName() + " with message: " + e.getMessage());
         }
     }
@@ -48,7 +48,7 @@ public class ExternalCallService implements IExternalCallService {
     @Override
     public CustomResponse makeAllRequests() {
 //        makeRequest(100); continue - hangs
-        System.out.println(makeRequest(101).getMessage());
+        makeRequest(101);
 //        makeRequest(102); processing - hangs
 //        makeRequest(103); early hints - hangs
         makeRequest(200);
