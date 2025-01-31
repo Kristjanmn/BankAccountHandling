@@ -113,9 +113,128 @@ response example    {
                     }
 ```
 
+#### Deposit money
+```
+method              POST
+endpoint            /account/deposit
+description         Deposit money into account
+response            CustomResponse
+boy                 DepositDTO
+request example     localhost:8080/account/deposit
+request body        {
+                        "accountId": "13bd56d4-d682-49b3-aef2-2aca534ee5aa",
+                        "currency": "SEK",
+                        "amount": 20.59
+                    }
+response example    {
+                        "success": true,
+                        "message": "success",
+                        "object": {
+                            "id": "13bd56d4-d682-49b3-aef2-2aca534ee5aa",
+                            "balances": [
+                                {
+                                    "currency": "EUR",
+                                    "amount": 0.0
+                                },
+                                {
+                                    "currency": "USD",
+                                    "amount": 0.0
+                                },
+                                {
+                                    "currency": "SEK",
+                                    "amount": 20.59
+                                },
+                                {
+                                    "currency": "RUB",
+                                    "amount": 0.0
+                                }
+                            ]
+                        }
+                    }
+```
 
 
-## Currency endpoints
+#### Withdraw money
+```
+method              POST
+endpoint            /account/withdraw
+description         Withdraw money from account
+response            CustomResponse
+body                WithdrawDTO
+request example     localhost:8080/account/withdraw
+request body        {
+                        "accountId": "13bd56d4-d682-49b3-aef2-2aca534ee5aa",
+                        "currency": "SEK",
+                        "amount": 17.25
+                    }
+response example    {
+                        "success": true,
+                        "message": "success",
+                        "object": {
+                            "id": "13bd56d4-d682-49b3-aef2-2aca534ee5aa",
+                            "balances": [
+                                {
+                                    "currency": "EUR",
+                                    "amount": 0.0
+                                },
+                                {
+                                    "currency": "USD",
+                                    "amount": 0.0
+                                },
+                                {
+                                    "currency": "SEK",
+                                    "amount": 3.34
+                                },
+                                {
+                                    "currency": "RUB",
+                                    "amount": 0.0
+                                }
+                            ]
+                        }
+                    }
+```
+
+#### Exchange currency
+```
+method              POST
+endpoint            /account/exchange
+description         Exchange money in account from one currency to another
+response            CustomResponse
+body                ExchangeDTO
+request example     localhost:8080/account/exchange
+request body        {
+                        "accountId": "13bd56d4-d682-49b3-aef2-2aca534ee5aa",
+                        "fromCurrency": "SEK",
+                        "toCurrency": "USD",
+                        "amount": 26.33
+                    }
+response example    {
+                        "success": true,
+                        "message": "success",
+                        "object": {
+                            "id": "13bd56d4-d682-49b3-aef2-2aca534ee5aa",
+                            "balances": [
+                                {
+                                    "currency": "EUR",
+                                    "amount": 0.0
+                                },
+                                {
+                                    "currency": "USD",
+                                    "amount": 2.4090923160494837
+                                },
+                                {
+                                    "currency": "SEK",
+                                    "amount": 11.510000000000005
+                                },
+                                {
+                                    "currency": "RUB",
+                                    "amount": 0.0
+                                }
+                            ]
+                        }
+                    }
+```
+
 ## External call endpoints
 #### Get random status code
 ```

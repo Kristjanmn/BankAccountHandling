@@ -118,12 +118,16 @@ public class AccountService implements IAccountService {
             return new CustomResponse(false, "Deposit amount must be positive value");
         }
         Account account = getAccountById(depositDTO.getAccountId());
+        if (account == null) {
+            logger.error("Account {} not found", depositDTO.getAccountId());
+            return new CustomResponse(false, "Account not found");
+        }
         boolean result = account.addBalance(depositDTO.getCurrency(), depositDTO.getAmount());
         if (result) {
             logger.info("Account {} deposited {} {}", depositDTO.getAccountId(), depositDTO.getAmount(), depositDTO.getCurrency());
             return new CustomResponse(modelMapper.map(saveAccount(account), AccountDTO.class));
         }
-        logger.warn("Account {} failed to deposit {} {}", depositDTO.getAccountId(), depositDTO.getAmount(), depositDTO.getCurrency());
+        logger.error("Account {} failed to deposit {} {}", depositDTO.getAccountId(), depositDTO.getAmount(), depositDTO.getCurrency());
         return new CustomResponse(false, "Could not deposit");
     }
 
@@ -141,12 +145,16 @@ public class AccountService implements IAccountService {
             return new CustomResponse(false, "Withdraw amount must be positive value");
         }
         Account account = getAccountById(withdrawDTO.getAccountId());
+        if (account == null) {
+            logger.error("Account {} not found", withdrawDTO.getAccountId());
+            return new CustomResponse(false, "Account not found");
+        }
         boolean result = account.withdrawBalance(withdrawDTO.getCurrency(), withdrawDTO.getAmount());
         if (result) {
             logger.info("Account {} withdrew {} {}", withdrawDTO.getAccountId(), withdrawDTO.getAmount(), withdrawDTO.getCurrency());
             return new CustomResponse(modelMapper.map(saveAccount(account), AccountDTO.class));
         }
-        logger.warn("Account {} failed to withdraw {} {}", withdrawDTO.getAccountId(), withdrawDTO.getAmount(), withdrawDTO.getCurrency());
+        logger.error("Account {} failed to withdraw {} {}", withdrawDTO.getAccountId(), withdrawDTO.getAmount(), withdrawDTO.getCurrency());
         return new CustomResponse(false, "Could not withdraw");
     }
 
@@ -165,13 +173,17 @@ public class AccountService implements IAccountService {
             return new CustomResponse(false, "Exchange amount must be positive value");
         }
         Account account = getAccountById(exchangeDTO.getAccountId());
+        if (account == null) {
+            logger.error("Account {} not found", exchangeDTO.getAccountId());
+            return new CustomResponse(false, "Account not found");
+        }
         double convertedValue = currencyService.convertCurrency(exchangeDTO.getFromCurrency(), exchangeDTO.getToCurrency(), exchangeDTO.getAmount());
         boolean result = account.exchange(exchangeDTO.getFromCurrency(), exchangeDTO.getToCurrency(), exchangeDTO.getAmount(), convertedValue);
         if (result) {
             logger.info("Account {} exchanged {} {} into {} {}", account.getId(), exchangeDTO.getAmount(), exchangeDTO.getFromCurrency(), convertedValue, exchangeDTO.getToCurrency());
             return new CustomResponse(modelMapper.map(saveAccount(account), AccountDTO.class));
         }
-        logger.warn("Account {} failed to exchange {} {} into {}", exchangeDTO.getAccountId(), exchangeDTO.getAmount(), exchangeDTO.getFromCurrency(), exchangeDTO.getToCurrency());
+        logger.error("Account {} failed to exchange {} {} into {}", exchangeDTO.getAccountId(), exchangeDTO.getAmount(), exchangeDTO.getFromCurrency(), exchangeDTO.getToCurrency());
         return new CustomResponse(false, "Could not exchange");
     }
 }

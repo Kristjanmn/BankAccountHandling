@@ -16,7 +16,7 @@ public class ExternalCallService implements IExternalCallService {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
-     * Make request to httpstat.us API
+     * Make request to <a href="https://httpstat.us">httpstat.us</a> API
      *
      * @param uri request uri
      * @return custom response
@@ -27,6 +27,7 @@ public class ExternalCallService implements IExternalCallService {
             ResponseEntity<String> response = restTemplate.getForEntity(baseUri + uri, String.class);
             return new CustomResponse(true, response.getBody());
         } catch (RestClientException e) {
+            // Extend this section to handle different response codes/exceptions
             if (HttpClientErrorException.class.isAssignableFrom(e.getClass()))
                 return new CustomResponse(true, "Received client error " + ((HttpClientErrorException) e).getStatusText());
             if (HttpServerErrorException.class.isAssignableFrom(e.getClass()))
