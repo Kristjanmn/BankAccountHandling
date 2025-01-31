@@ -20,7 +20,208 @@ docker-compose up
 ---
 # API Documentations
 ## Account endpoints
+#### Get all accounts
+```
+method              GET
+endpoint            /account
+description         Get all available accounts
+response            CustomResponse
+request example     localhost:8080/account
+response example    {
+                        "success":true,
+                        "message":"success",
+                        "object":[
+                            {
+                                "id":"472aa230-3654-4c74-a1c4-0ef66ebc04cd",
+                                "balances":[
+                                    {"currency":"EUR",
+                                    "amount":0.0
+                                },{
+                                    "currency":"USD",
+                                    "amount":0.0
+                                },{
+                                    "currency":"SEK",
+                                    "amount":0.0
+                                },{
+                                    "currency":"RUB",
+                                    "amount":0.0
+                                }]
+                            }
+                        ]
+                    }
+```
+
+#### Get new account
+```
+method              GET
+endpoint            /account/new
+description         Get new account
+response            CustomResponse
+request example     localhost:8080/account/new
+response example    {
+                        "success":true,
+                        "message":"success",
+                        "object":{
+                            "id":"472aa230-3654-4c74-a1c4-0ef66ebc04cd",
+                            "balances":[
+                                {
+                                    "currency":"EUR",
+                                    "amount":0.0
+                                },{
+                                    "currency":"USD",
+                                    "amount":0.0
+                                },{
+                                    "currency":"SEK",
+                                    "amount":0.0
+                                },{
+                                    "currency":"RUB",
+                                    "amount":0.0
+                                }
+                            ]
+                        }
+                    }
+```
+
+#### Get new account
+```
+method              GET
+endpoint            /account/{id}
+description         Get account by ID
+response            CustomResponse
+request example     localhost:8080/account/472aa230-3654-4c74-a1c4-0ef66ebc04cd
+response example    {
+                        "success":true,
+                        "message":"success",
+                        "object":{
+                            "id":"472aa230-3654-4c74-a1c4-0ef66ebc04cd",
+                            "balances":[
+                                {
+                                    "currency":"EUR",
+                                    "amount":0.0
+                                },{
+                                    "currency":"USD",
+                                    "amount":0.0
+                                },{
+                                    "currency":"SEK",
+                                    "amount":0.0
+                                },{
+                                    "currency":"RUB",
+                                    "amount":0.0
+                                }
+                            ]
+                        }
+                    }
+```
+
+
+
 ## Currency endpoints
+## External call endpoints
+#### Get random status code
+```
+method              GET
+endpoint            /external
+description         Get random status code from httpstat.us API
+response            CustomResponse
+request example     localhost:8080/external
+response example    {
+                        "success":true,
+                        "message":"{\"code\":278,\"description\":\"278 Unknown Code\"}",
+                        "object":null
+                    }
+```
+
+#### Get status code
+```
+method              GET
+endpoint            /external/{code}
+description         Get desired status code
+response            CustomResponse
+request example     localhost:8080/external/202
+response example    {
+                        "success":true,
+                        "message":"{\"code\":202,\"description\":\"Accepted\"}",
+                        "object":null
+                    }
+```
+
+#### Send request for all status codes
+```
+method              GET
+endpoint            /external/all
+description         Send request for all status codes
+response            CustomResponse
+request example     localhost:8080/external/all
+response example    {
+                        "success":true,
+                        "message":"Made request for all supported codes",
+                        "object":null
+                    }
+```
+
+---
+# Models
+## Here are a list of models (Data Transfer Objects) used
+### Client -> Server
+#### Deposit
+```
+class               DepositDTO
+description         Object used to deposit money into account
+fields:
+    accountId       account UUID, indicates which account the money gets deposited into
+    currency        which currency money is being deposited
+    amount          amount of money to deposit
+```
+
+#### Withdraw
+```
+class               WithdrawDTO
+description         Object used to withdraw money from account
+fields:
+    accountId       account UUID, indicates which account the money gets withdrawn from
+    currency        which currency money is being withdrawn
+    amount          amount of money to withdraw
+```
+
+#### Exchange
+```
+class               ExchangeDTO
+description         Object used to exchange money for one currency to another
+fields:
+    accountId       account UUID, indicates which account performs money exchange
+    fromCurrency    which currency to exchange from
+    toCurrency      which currency to exchange to
+    amount          amount of money to exchange
+```
+
+### Server -> Client
+#### CustomResponse
+```
+class               io.nqa.commons.CustomResponse
+description         Object used to send response to client.
+fields:
+    success         boolean indicating if client action was successfully performed
+    message         plain text message provided to client
+    object          object provided to client, a would-be body for regular request
+```
+
+#### Account
+```
+class               AccountDTO
+description         Object used to send client overview of bank account and balance
+fields:
+    id              account UUID
+    balances        list of BalanceDTO
+```
+
+#### Balance
+```
+class               BalanceDTO
+description         Object used to send client overview of bank account balance
+fields:
+    currency        balance currency
+    amount          amount of money in account in this currency
+```
 
 ---
 # Notes
